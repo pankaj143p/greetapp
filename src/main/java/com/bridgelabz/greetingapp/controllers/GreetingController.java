@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class GreetingController {
@@ -22,8 +23,13 @@ public class GreetingController {
     // service object
     GreetingService greetingService;
     // method for get
-    @GetMapping(value = "hello", produces = "application/json")
-    public ResponseEntity<ObjectNode> sayHello() {
+    @GetMapping(value = {"hello", "hello/{firstName}", "hello/{firstName}/{lastName}"}, produces = "application/json")
+    public ResponseEntity<ObjectNode> sayHello(
+        @PathVariable(value = "firstName", required = false)Optional<String>firstName,
+        @PathVariable(value = "firstName", required = false)Optional<String>lastName){
+        ObjectNode node = objmapper.createObjectNode();
+        firstName.ifPresent(val -> node.put("firstName",val));
+        lastName.ifPresent(val -> node.put("lastName",val));
         return ResponseEntity.ok(greetingService.myservice(node));
     }
 
