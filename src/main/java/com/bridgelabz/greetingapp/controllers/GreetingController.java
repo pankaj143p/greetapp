@@ -134,4 +134,11 @@ public class GreetingController {
     public Greeting updateMessage(@PathVariable Long id, @RequestBody String newMessage){
         return greetingService.updateMessage(id, newMessage);
     }
+
+    // delete message
+    @DeleteMapping("greeting/{id}")
+    public String deleteMessage(@PathVariable Long id){
+        boolean delete = greetingService.deleteMessage(id);
+        return (delete) ? "Message delete successfully" : "message not found";
+    }
 }
