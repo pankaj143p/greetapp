@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 // <-----------   temprary code --------->
 
 
@@ -115,8 +117,15 @@ public class GreetingController {
     public Greeting getGreetingById(@PathVariable Long id){
         return greetingService.getGreetById(id);
     }
+    // if id not found anywhere in database
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    // for showing all greeting message from repository or database
+    @GetMapping("/greetings")
+    public List<Greeting> getAllGreetings(){
+        return greetingService.getAllGreetings();
     }
 }
