@@ -1,62 +1,109 @@
 package com.bridgelabz.greetingapp.controllers;
 
-import com.bridgelabz.greetingapp.service.GreetingService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.bridgelabz.greetingapp.model.Greeting;
+import com.bridgelabz.greetingapp.repository.GreetingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-import java.util.Optional;
+// <-----------   temprory coed --------->
+
+
+//import com.bridgelabz.greetingapp.service.GreetingService;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.databind.node.ObjectNode;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.web.bind.annotation.*;
+//
+//import java.util.Map;
+//import java.util.Optional;
+//
+//@RestController
+//public class GreetingController {
+//    ObjectMapper objmapper = new ObjectMapper();
+//    ObjectNode node;
+//    public GreetingController() {
+//        node = objmapper.createObjectNode();
+//        node.put("message", "Hello World");
+//    }
+//
+//    @Autowired
+//    // service object
+//    GreetingService greetingService;
+//    // method for get
+//    @GetMapping(value = {"hello", "hello/{firstName}", "hello/{firstName}/{lastName}"}, produces = "application/json")
+//    public ResponseEntity<ObjectNode> sayHello(
+//        @PathVariable(value = "firstName", required = false)Optional<String>firstName,
+//        @PathVariable(value = "firstName", required = false)Optional<String>lastName){
+//        ObjectNode node = objmapper.createObjectNode();
+//        firstName.ifPresent(val -> node.put("firstName",val));
+//        lastName.ifPresent(val -> node.put("lastName",val));
+//        return ResponseEntity.ok(greetingService.myService(node));
+//    }
+//
+//    // get for all
+//    @GetMapping(value = "helloall", produces = "application/json")
+//    public ResponseEntity<ObjectNode> helloToAll() {
+//        return ResponseEntity.ok(greetingService.myService(node));
+//    }
+//
+//    // method for post
+//    @PostMapping(value = "hellopost", produces = "application/json")
+//    public ResponseEntity<ObjectNode> helloPost(@RequestBody Map<String, String> newData) {
+//       node.put("message", newData.get("message"));
+//        return ResponseEntity.ok(greetingService.myService(node));
+//    }
+//
+//    // method for put
+//    @PutMapping(value = "helloput", produces = "application/json")
+//    public ResponseEntity<ObjectNode> helloPut(@RequestBody Map<String, String> newData) {
+//       node.put("message", newData.get("message"));
+//        return ResponseEntity.ok(greetingService.myService(node));
+//    }
+//
+//    // method for delete
+//    @DeleteMapping(value = "/hello", produces = "application/json")
+//    public ResponseEntity<ObjectNode> helloDelete(Map<String, String> newData) {
+//        node.remove("name");
+//        return ResponseEntity.ok(greetingService.myService(node));
+//    }
+//}
+
+// <-------------   main code   --------------------->
 
 @RestController
 public class GreetingController {
-    ObjectMapper objmapper = new ObjectMapper();
-    ObjectNode node;
-    public GreetingController() {
-        node = objmapper.createObjectNode();
-        node.put("message", "Hello World");
-    }
-
     @Autowired
-    // service object
-    GreetingService greetingService;
-    // method for get
-    @GetMapping(value = {"hello", "hello/{firstName}", "hello/{firstName}/{lastName}"}, produces = "application/json")
-    public ResponseEntity<ObjectNode> sayHello(
-        @PathVariable(value = "firstName", required = false)Optional<String>firstName,
-        @PathVariable(value = "firstName", required = false)Optional<String>lastName){
-        ObjectNode node = objmapper.createObjectNode();
-        firstName.ifPresent(val -> node.put("firstName",val));
-        lastName.ifPresent(val -> node.put("lastName",val));
-        return ResponseEntity.ok(greetingService.myservice(node));
+    private GreetingRepository greetingRepository;
+    @GetMapping("/greet")
+    public String greet(
+            @RequestParam(value = "firstName", required = false) String firstName,
+            @RequestParam(value = "lastName",required = false) String lastName
+    ){
+        String msg;
+        // if have both first and last name
+        if(firstName!=null && lastName!=null){
+            msg = "Hello "+firstName+" "+lastName;
+        }
+        // for first name
+        else if (firstName != null) {
+            msg = "Hello, " + firstName + "!";
+        }
+        // for only last name
+        else if (lastName != null) {
+            msg = "Hello, Mr./Ms. " + lastName + "!";
+        }
+        // default case
+        else {
+            msg = "Hello World!";
+        }
+        Greeting gr = new Greeting();
+        gr.setMessage(msg);
+        greetingRepository.save(gr);
+        return msg;
     }
 
-    // get for all
-    @GetMapping(value = "helloall", produces = "application/json")
-    public ResponseEntity<ObjectNode> helloToAll() {
-        return ResponseEntity.ok(greetingService.myservice(node));
-    }
 
-    // method for post
-    @PostMapping(value = "hellopost", produces = "application/json")
-    public ResponseEntity<ObjectNode> helloPost(@RequestBody Map<String, String> newData) {
-       node.put("message", newData.get("message"));
-        return ResponseEntity.ok(greetingService.myservice(node));
-    }
-
-    // method for put
-    @PutMapping(value = "helloput", produces = "application/json")
-    public ResponseEntity<ObjectNode> helloPut(@RequestBody Map<String, String> newData) {
-       node.put("message", newData.get("message"));
-        return ResponseEntity.ok(greetingService.myservice(node));
-    }
-
-    // method for delete
-    @DeleteMapping(value = "/hello", produces = "application/json")
-    public ResponseEntity<ObjectNode> helloDelete(Map<String, String> newData) {
-        node.remove("name");
-        return ResponseEntity.ok(greetingService.myservice(node));
-    }
 }

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GreetingService {
-    public ObjectNode myservice(ObjectNode objectNode){
+    public ObjectNode myService(ObjectNode objectNode){
         return objectNode.put("used_service","myservice");
     }
 }
