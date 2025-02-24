@@ -2,12 +2,14 @@ package com.bridgelabz.greetingapp.controllers;
 
 import com.bridgelabz.greetingapp.model.Greeting;
 import com.bridgelabz.greetingapp.repository.GreetingRepository;
+import com.bridgelabz.greetingapp.service.GreetingService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-// <-----------   temprory coed --------->
+// <-----------   temprary code --------->
 
 
 //import com.bridgelabz.greetingapp.service.GreetingService;
@@ -77,6 +79,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GreetingController {
     @Autowired
     private GreetingRepository greetingRepository;
+
     @GetMapping("/greet")
     public String greet(
             @RequestParam(value = "firstName", required = false) String firstName,
@@ -105,5 +108,15 @@ public class GreetingController {
         return msg;
     }
 
-
+    @Autowired
+    GreetingService greetingService;
+    // for finding message by id
+    @GetMapping("/greeting/{id}")
+    public Greeting getGreetingById(@PathVariable Long id){
+        return greetingService.getGreetById(id);
+    }
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }
