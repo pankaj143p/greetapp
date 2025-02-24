@@ -104,7 +104,7 @@ public class GreetingController {
         else {
             msg = "Hello World!";
         }
-        Greeting gr = new Greeting();
+        Greeting gr =new Greeting();
         gr.setMessage(msg);
         greetingRepository.save(gr);
         return msg;
@@ -127,5 +127,11 @@ public class GreetingController {
     @GetMapping("/greetings")
     public List<Greeting> getAllGreetings(){
         return greetingService.getAllGreetings();
+    }
+
+    // for update message
+    @PutMapping("greeting/{id}")
+    public Greeting updateMessage(@PathVariable Long id, @RequestBody String newMessage){
+        return greetingService.updateMessage(id, newMessage);
     }
 }
